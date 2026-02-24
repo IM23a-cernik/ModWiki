@@ -8,9 +8,6 @@ jobs:
   job_build_frontend:
     name: Build frontend code
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: frontend # Falls Frontend sich im Unterordner "Frontend" befindet
 
     steps:
       - name: Checkout code
