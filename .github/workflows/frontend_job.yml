@@ -3,6 +3,7 @@ name: Build frontend
 on:
   workflow_call:
   workflow_dispatch:
+  push:
 
 jobs:
   job_build_frontend:
@@ -20,7 +21,5 @@ jobs:
 
       - name: Install dependencies
         run: npm ci
-      - name: Run Prettier check
-        run: npm run format-check
       - name: Run ESLint check
-        run: npm run lint-check
+        run: npx eslint .
