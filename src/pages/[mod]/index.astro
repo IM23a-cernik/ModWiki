@@ -1,0 +1,75 @@
+---
+import { getCollection, render } from "astro:content";
+import Layout from "../../layouts/Layout.astro";
+
+export async function getStaticPaths() {
+    const mods = await getCollection("mods");
+
+    return mods.map((modEntry) => {
+        const [mod] = modEntry.id.split("/");
+
+        return {
+            params: { mod },
+            props: { modEntry },
+        };
+    });
+}
+
+const { modEntry } = Astro.props;
+const { Content } = await render(modEntry);
+const modSlug = Astro.params.mod ?? modEntry.id.split("/")[0];
+const getEntrySlug = (id: string) => id.split("/").at(-1) ?? id;
+
+const [items, blocks, miscEntries, achievements] = await Promise.all([
+    getCollection("items", ({ id }) => id.startsWith(`${modSlug}/`)),
+    getCollection("blocks", ({ id }) => id.startsWith(`${modSlug}/`)),
+    getCollection("misc", ({ id }) => id.startsWith(`${modSlug}/`)),
+    getCollection("achievements", ({ id }) => id.startsWith(`${modSlug}/`)),
+]);
+---
+
+<Layout>
+    <main>
+        <h1>{modEntry.data.name}</h1>
+        {modEntry.data.summary && <p>{modEntry.data.summary}</p>}
+        <Content />
+
+        <section>
+            <h2>Items</h2>
+            <ul>
+                {items.map((item) => (
+                    <li><a href={`/${modSlug}/items/${getEntrySlug(item.id)}/`}>{item.data.name}</a></li>
+                ))}
+            </ul>
+        </section>
+
+        <section>
+            <h2>Blocks</h2>
+            <ul>
+                {blocks.map((block) => (
+                    <li><a href={`/${modSlug}/blocks/${getEntrySlug(block.id)}/`}>{block.data.name}</a></li>
+                ))}
+            </ul>
+        </section>
+
+        <section>
+            <h2>Misc</h2>
+            <ul>
+                {miscEntries.map((misc) => (
+                    <li><a href={`/${modSlug}/misc/${getEntrySlug(misc.id)}/`}>{misc.data.name}</a></li>
+                ))}
+            </ul>
+        </section>
+
+        <section>
+            <h2>Achievements</h2>
+            <ul>
+                {achievements.map((achievement) => (
+                    <li>
+                        <a href={`/${modSlug}/achievements/${getEntrySlug(achievement.id)}/`}>{achievement.data.name}</a>
+                    </li>
+                ))}
+            </ul>
+        </section>
+    </main>
+</Layout>

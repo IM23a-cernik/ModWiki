@@ -1,0 +1,27 @@
+---
+import { getCollection } from "astro:content";
+
+export async function getStaticPaths() {
+    const achievements = await getCollection("achievements");
+
+    return achievements
+        .map((achievement) => {
+            const [mod, section, achievementSlug] = achievement.id.split("/");
+
+            if (!mod || section !== "achievements" || !achievementSlug) {
+                return null;
+            }
+
+            return {
+                params: { mod, achievement: achievementSlug },
+                props: { achievement },
+            };
+        })
+        .filter(Boolean);
+}
+
+const { achievement } = Astro.props;
+---
+
+<h1>{achievement.data.name}</h1>
+<p>{achievement.body}</p>

@@ -1,0 +1,27 @@
+---
+import { getCollection } from "astro:content";
+
+export async function getStaticPaths() {
+    const miscEntries = await getCollection("misc");
+
+    return miscEntries
+        .map((misc) => {
+            const [mod, section, miscSlug] = misc.id.split("/");
+
+            if (!mod || section !== "misc" || !miscSlug) {
+                return null;
+            }
+
+            return {
+                params: { mod, misc: miscSlug },
+                props: { misc },
+            };
+        })
+        .filter(Boolean);
+}
+
+const { misc } = Astro.props;
+---
+
+<h1>{misc.data.name}</h1>
+<p>{misc.body}</p>
