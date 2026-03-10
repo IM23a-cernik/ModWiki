@@ -29,4 +29,12 @@ const achievements = defineCollection({
     schema: baseSchema,
 });
 
-export const collections = { achievements, blocks, items, misc };
+const mods = defineCollection({
+    loader: glob({ pattern: "*/mod.md", base: "./src/content" }),
+    schema: z.object({
+        name: z.string(),
+        summary: z.string().optional(),
+    }),
+});
+
+export const collections = { achievements, blocks, items, misc, mods };
