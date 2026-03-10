@@ -3,6 +3,11 @@ name: Build frontend
 on:
   workflow_call:
   workflow_dispatch:
+  on:
+    push:
+      branches:
+        -main
+        -dev
 
 jobs:
   job_build_frontend:
