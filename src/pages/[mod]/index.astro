@@ -1,12 +1,13 @@
 ---
 import { getCollection, render } from "astro:content";
 import Layout from "../../layouts/Layout.astro";
+import { getEntrySlugFromId, getModSlugFromId } from "../../utils/contentEntry.js";
 
 export async function getStaticPaths() {
     const mods = await getCollection("mods");
 
     return mods.map((modEntry) => {
-        const [mod] = modEntry.id.split("/");
+        const mod = getModSlugFromId(modEntry.id);
 
         return {
             params: { mod },
@@ -17,8 +18,7 @@ export async function getStaticPaths() {
 
 const { modEntry } = Astro.props;
 const { Content } = await render(modEntry);
-const modSlug = Astro.params.mod ?? modEntry.id.split("/")[0];
-const getEntrySlug = (id: string) => id.split("/").at(-1) ?? id;
+const modSlug = Astro.params.mod ?? getModSlugFromId(modEntry.id);
 
 const [items, blocks, miscEntries, achievements] = await Promise.all([
     getCollection("items", ({ id }) => id.startsWith(`${modSlug}/`)),
@@ -130,7 +130,7 @@ const sections = [
                                 <li>
                                     <a
                                         class="entry-link"
-                                        href={`/${modSlug}/${section.hrefPrefix}/${getEntrySlug(entry.id)}/`}
+                                        href={`/${modSlug}/${section.hrefPrefix}/${getEntrySlugFromId(entry.id)}/`}
                                     >
                                         <span>{entry.data.name}</span>
                                         <span class="entry-link__hint">Open</span>

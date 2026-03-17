@@ -1,6 +1,7 @@
 ---
 import { getCollection } from "astro:content";
 import Layout from "../layouts/Layout.astro";
+import { getModSlugFromId } from "../utils/contentEntry.js";
 
 const mods = await getCollection("mods");
 ---
@@ -16,7 +17,7 @@ const mods = await getCollection("mods");
 
         <section class="section-grid">
             {mods.map((mod) => {
-                const modSlug = mod.id.split("/")[0];
+                const modSlug = getModSlugFromId(mod.id);
 
                 return (
                     <section class:list={["section-card", "tone-burgundy"]}>

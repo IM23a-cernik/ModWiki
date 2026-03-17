@@ -1,20 +1,20 @@
 ---
 import { getCollection, render } from "astro:content";
 import ItemLayout from "../../../layouts/ItemLayout.astro";
+import { getModSlugFromId, getRouteEntryParams } from "../../../utils/contentEntry.js";
 
 export async function getStaticPaths() {
     const items = await getCollection("items");
 
     return items
         .map((item) => {
-            const [mod, section, itemSlug] = item.id.split("/");
-
-            if (!mod || section !== "items" || !itemSlug) {
+            const routeParams = getRouteEntryParams(item.id, "items");
+            if (!routeParams) {
                 return null;
             }
 
             return {
-                params: { mod, item: itemSlug },
+                params: { mod: routeParams.mod, item: routeParams.entrySlug },
                 props: { item },
             };
         })
@@ -29,7 +29,7 @@ const { Content } = await render(item);
     title={item.data.name}
     description={`Item entry for ${item.data.name}.`}
     eyebrow="Item"
-    mod={Astro.params.mod ?? item.id.split("/")[0]}
+    mod={Astro.params.mod ?? getModSlugFromId(item.id)}
     tone="tone-gold"
     typeLabel="Item"
 >
