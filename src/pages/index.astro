@@ -1,11 +1,40 @@
 ---
-import Welcome from '../components/Welcome.astro';
-import Layout from '../layouts/Layout.astro';
+import { getCollection } from "astro:content";
+import Layout from "../layouts/Layout.astro";
 
-// Welcome to Astro! Wondering what to do next? Check out the Astro documentation at https://docs.astro.build
-// Don't want to use any of this? Delete everything in this file, the `assets`, `components`, and `layouts` directories, and start fresh.
+const mods = await getCollection("mods");
 ---
 
-<Layout>
-	<Welcome />
+<Layout title="ModWiki" description="Browse available mod wiki pages.">
+    <main class="page-shell">
+        <section class="page-card home-hero tone-burgundy">
+            <h1>Mod Wiki</h1>
+            <p class="summary">
+                Main page of the Wiki for all of my mods and plugins!
+            </p>
+        </section>
+
+        <section class="section-grid">
+            {mods.map((mod) => {
+                const modSlug = mod.id.split("/")[0];
+
+                return (
+                    <section class:list={["section-card", "tone-burgundy"]}>
+                        <div class="section-card__header">
+                            <div>
+                                <p class="section-card__eyebrow">Mod</p>
+                                <h2>{mod.data.name}</h2>
+                            </div>
+                            {mod.data.summary && <p>{mod.data.summary}</p>}
+                        </div>
+
+                        <a class="entry-link tone-burgundy" href={`/${modSlug}/`}>
+                            <span>{mod.data.name} Wiki</span>
+                            <span class="entry-link__hint">Enter</span>
+                        </a>
+                    </section>
+                );
+            })}
+        </section>
+    </main>
 </Layout>

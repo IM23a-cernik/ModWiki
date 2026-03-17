@@ -34,6 +34,8 @@ const mods = defineCollection({
     schema: z.object({
         name: z.string(),
         summary: z.string().optional(),
+        modrinth: z.string().url().optional(),
+        curseforge: z.string().url().optional(),
     }),
 });
 

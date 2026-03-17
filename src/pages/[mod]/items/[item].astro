@@ -1,5 +1,6 @@
 ---
-import { getCollection } from "astro:content";
+import { getCollection, render } from "astro:content";
+import ItemLayout from "../../../layouts/ItemLayout.astro";
 
 export async function getStaticPaths() {
     const items = await getCollection("items");
@@ -21,7 +22,18 @@ export async function getStaticPaths() {
 }
 
 const { item } = Astro.props;
+const { Content } = await render(item);
 ---
 
-<h1>{item.data.name}</h1>
-<p>{item.body}</p>
+<ItemLayout
+    title={item.data.name}
+    description={`Item entry for ${item.data.name}.`}
+    eyebrow="Item"
+    mod={Astro.params.mod ?? item.id.split("/")[0]}
+    tone="tone-gold"
+    typeLabel="Item"
+>
+    <div class="prose">
+        <Content />
+    </div>
+</ItemLayout>

@@ -1,5 +1,6 @@
 ---
-import { getCollection } from "astro:content";
+import { getCollection, render } from "astro:content";
+import ItemLayout from "../../../layouts/ItemLayout.astro";
 
 export async function getStaticPaths() {
     const achievements = await getCollection("achievements");
@@ -21,7 +22,18 @@ export async function getStaticPaths() {
 }
 
 const { achievement } = Astro.props;
+const { Content } = await render(achievement);
 ---
 
-<h1>{achievement.data.name}</h1>
-<p>{achievement.body}</p>
+<ItemLayout
+    title={achievement.data.name}
+    description={`Achievement entry for ${achievement.data.name}.`}
+    eyebrow="Achievement"
+    mod={Astro.params.mod ?? achievement.id.split("/")[0]}
+    tone="tone-burgundy"
+    typeLabel="Achievement"
+>
+    <div class="prose">
+        <Content />
+    </div>
+</ItemLayout>
