@@ -4,6 +4,7 @@ import { glob } from "astro/loaders";
 const baseSchema = z.object({
     name: z.string(),
     mod: z.string().optional(),
+    icon: z.string().optional(),
 });
 
 const items = defineCollection({
@@ -34,6 +35,8 @@ const mods = defineCollection({
     schema: z.object({
         name: z.string(),
         summary: z.string().optional(),
+        icon: z.string().optional(),
+        themeColor: z.string().optional(),
         modrinth: z.string().url().optional(),
         curseforge: z.string().url().optional(),
     }),

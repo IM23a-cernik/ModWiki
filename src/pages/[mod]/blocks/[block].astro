@@ -1,7 +1,8 @@
 ---
-import { getCollection, render } from "astro:content";
+import { getCollection, getEntry, render } from "astro:content";
 import ItemLayout from "../../../layouts/ItemLayout.astro";
 import { getModSlugFromId, getRouteEntryParams } from "../../../utils/contentEntry.js";
+import { getModPresentation } from "../../../utils/styleUtil.ts";
 
 export async function getStaticPaths() {
     const blocks = await getCollection("blocks");
@@ -23,15 +24,21 @@ export async function getStaticPaths() {
 
 const { block } = Astro.props;
 const { Content } = await render(block);
+const modSlug = Astro.params.mod ?? getModSlugFromId(block.id);
+const modEntry = await getEntry("mods", `${modSlug}/mod`);
+const { icon: modIcon, themeStyle } = getModPresentation(modEntry);
 ---
 
 <ItemLayout
     title={block.data.name}
     description={`Block entry for ${block.data.name}.`}
     eyebrow="Block"
-    mod={Astro.params.mod ?? getModSlugFromId(block.id)}
-    tone="tone-blue"
+    mod={modSlug}
+    tone="tone-mod"
     typeLabel="Block"
+    modIcon={modIcon}
+    entryIcon={block.data.icon}
+    themeStyle={themeStyle}
 >
     <div class="prose">
         <Content />

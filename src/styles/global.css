@@ -19,6 +19,7 @@
     --brand-curseforge: #f16436;
     --accent-glow: rgba(110, 24, 48, 0.28);
     --shadow: 0 10px 28px rgba(0, 0, 0, 0.24);
+    --mod-accent: #6e1830;
 }
 
 * {
@@ -144,6 +145,12 @@ h1 {
     font-size: 1.65rem;
 }
 
+.stat-card__with-icon {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.65rem;
+}
+
 .section-grid {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -219,6 +226,31 @@ h1 {
     display: inline-flex;
     align-items: center;
     gap: 0.7rem;
+}
+
+.title-with-icon {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.wiki-icon {
+    width: 1.5rem;
+    height: 1.5rem;
+    object-fit: contain;
+    image-rendering: pixelated;
+    flex: none;
+    display: block;
+}
+
+.wiki-icon--lg {
+    width: 2.25rem;
+    height: 2.25rem;
+}
+
+.wiki-icon--xl {
+    width: 4rem;
+    height: 4rem;
 }
 
 .entry-link__brand img {
@@ -327,6 +359,49 @@ h1 {
     color: var(--accent-green);
 }
 
+.tone-mod {
+    border-color: color-mix(in srgb, var(--mod-accent) 50%, transparent);
+}
+
+.tone-mod .section-card__eyebrow,
+.tone-mod .stat-card__label,
+.tone-mod .entry-link__hint,
+.tone-mod .eyebrow {
+    color: color-mix(in srgb, var(--mod-accent) 72%, white);
+}
+
+.tone-mod .entry-link,
+.entry-link.tone-mod {
+    border-color: color-mix(in srgb, var(--mod-accent) 50%, transparent);
+}
+
+.tone-mod .entry-link:hover,
+.entry-link.tone-mod:hover {
+    border-color: color-mix(in srgb, var(--mod-accent) 70%, transparent);
+    background: color-mix(in srgb, var(--mod-accent) 10%, rgba(27, 31, 37, 0.92));
+}
+
+.tone-mod .stat-card,
+.stat-card.tone-mod {
+    border-color: color-mix(in srgb, var(--mod-accent) 50%, transparent);
+}
+
+.tone-mod .content-card,
+.content-card.tone-mod {
+    border-color: color-mix(in srgb, var(--mod-accent) 50%, transparent);
+}
+
+.tone-mod .hero__content,
+.tone-mod .hero__meta,
+.tone-mod .entry-hero__content,
+.tone-mod .entry-hero__meta {
+    border-color: color-mix(in srgb, var(--mod-accent) 50%, transparent);
+}
+
+.tone-mod:hover {
+    border-color: color-mix(in srgb, var(--mod-accent) 70%, transparent);
+}
+
 @media (max-width: 860px) {
     .hero,
     .entry-hero,
@@ -346,5 +421,14 @@ h1 {
 
     .section-card__header p {
         max-width: none;
+    }
+
+    .title-with-icon {
+        align-items: flex-start;
+    }
+
+    .wiki-icon--xl {
+        width: 3rem;
+        height: 3rem;
     }
 }

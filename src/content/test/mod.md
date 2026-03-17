@@ -1,6 +1,8 @@
 ---
 name: Test
 summary: Overview page for the test mod.
+themeColor: "#7c3aed"
+icon: "/icons/mods/test.png"
 modrinth: https://modrinth.com/mod/test
 curseforge: https://www.curseforge.com/minecraft/mc-mods/test
 ---

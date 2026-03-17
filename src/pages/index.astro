@@ -2,6 +2,7 @@
 import { getCollection } from "astro:content";
 import Layout from "../layouts/Layout.astro";
 import { getModSlugFromId } from "../utils/contentEntry.js";
+import { getThemeStyle } from "../utils/styleUtil.ts";
 
 const mods = await getCollection("mods");
 ---
@@ -20,17 +21,25 @@ const mods = await getCollection("mods");
                 const modSlug = getModSlugFromId(mod.id);
 
                 return (
-                    <section class:list={["section-card", "tone-burgundy"]}>
+                    <section class:list={["section-card", "tone-mod"]} style={getThemeStyle(mod.data.themeColor)}>
                         <div class="section-card__header">
                             <div>
                                 <p class="section-card__eyebrow">Mod</p>
-                                <h2>{mod.data.name}</h2>
+                                <div class="title-with-icon">
+                                    {mod.data.icon && (
+                                        <img class="wiki-icon wiki-icon--lg" src={mod.data.icon} alt="" loading="lazy" />
+                                    )}
+                                    <h2>{mod.data.name}</h2>
+                                </div>
                             </div>
                             {mod.data.summary && <p>{mod.data.summary}</p>}
                         </div>
 
-                        <a class="entry-link tone-burgundy" href={`/${modSlug}/`}>
-                            <span>{mod.data.name} Wiki</span>
+                        <a class="entry-link tone-mod" href={`/${modSlug}/`}>
+                            <span class="stat-card__with-icon">
+                                {mod.data.icon && <img class="wiki-icon" src={mod.data.icon} alt="" loading="lazy" />}
+                                <span>{mod.data.name} Wiki</span>
+                            </span>
                             <span class="entry-link__hint">Enter</span>
                         </a>
                     </section>
