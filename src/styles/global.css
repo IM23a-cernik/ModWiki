@@ -363,39 +363,38 @@ h1 {
     border-color: color-mix(in srgb, var(--mod-accent) 50%, transparent);
 }
 
-.tone-mod .section-card__eyebrow,
-.tone-mod .stat-card__label,
-.tone-mod .entry-link__hint,
-.tone-mod .eyebrow {
-    color: color-mix(in srgb, var(--mod-accent) 72%, white);
-}
-
-.tone-mod .entry-link,
+.tone-mod,
+.hero__meta.tone-mod,
+.entry-hero__meta.tone-mod,
+.hero__content.tone-mod,
+.entry-hero__content.tone-mod,
+.section-card.tone-mod,
+.content-card.tone-mod,
+.stat-card.tone-mod,
 .entry-link.tone-mod {
     border-color: color-mix(in srgb, var(--mod-accent) 50%, transparent);
 }
 
-.tone-mod .entry-link:hover,
+.tone-mod .section-card__eyebrow,
+.tone-mod .stat-card__label,
+.tone-mod .eyebrow,
+.tone-mod .entry-link:not(.brand-modrinth):not(.brand-curseforge) .entry-link__hint,
+.tone-mod .entry-link.tone-mod .entry-link__hint {
+    color: color-mix(in srgb, var(--mod-accent) 72%, white);
+}
+
+.tone-mod .stat-card:not(.tone-green) {
+    border-color: color-mix(in srgb, var(--mod-accent) 50%, transparent);
+}
+
+.tone-mod .entry-link:not(.brand-modrinth):not(.brand-curseforge) {
+    border-color: color-mix(in srgb, var(--mod-accent) 50%, transparent);
+}
+
+.tone-mod .entry-link:not(.brand-modrinth):not(.brand-curseforge):hover,
 .entry-link.tone-mod:hover {
     border-color: color-mix(in srgb, var(--mod-accent) 70%, transparent);
     background: color-mix(in srgb, var(--mod-accent) 10%, rgba(27, 31, 37, 0.92));
-}
-
-.tone-mod .stat-card,
-.stat-card.tone-mod {
-    border-color: color-mix(in srgb, var(--mod-accent) 50%, transparent);
-}
-
-.tone-mod .content-card,
-.content-card.tone-mod {
-    border-color: color-mix(in srgb, var(--mod-accent) 50%, transparent);
-}
-
-.tone-mod .hero__content,
-.tone-mod .hero__meta,
-.tone-mod .entry-hero__content,
-.tone-mod .entry-hero__meta {
-    border-color: color-mix(in srgb, var(--mod-accent) 50%, transparent);
 }
 
 .tone-mod:hover {
