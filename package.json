@@ -11,7 +11,9 @@
     "lint:fix": "eslint . --fix",
     "test": "node --experimental-vm-modules ./node_modules/jest/bin/jest.js",
     "test-coverage": "node --experimental-vm-modules ./node_modules/jest/bin/jest.js --coverage",
-    "tsc": "tsc"
+    "tsc": "tsc",
+    "e2e": "powershell -NoProfile -Command \"$p = Start-Process -FilePath 'npm.cmd' -ArgumentList 'run','dev','--','--host','127.0.0.1' -PassThru; try { $deadline = (Get-Date).AddSeconds(60); while ((Get-Date) -lt $deadline) { try { Invoke-WebRequest -Uri 'http://127.0.0.1:4321/' -UseBasicParsing | Out-Null; break } catch { Start-Sleep -Seconds 2 } }; if ((Get-Date) -ge $deadline) { throw 'Frontend did not become ready in time.' }; npm run e2e:test } finally { if ($p -and !$p.HasExited) { Stop-Process -Id $p.Id -Force } }\"",
+    "e2e:test": "testcafe firefox src/test/e2e.test.ts --client-logs --reporter spec --screenshots-on-fails --screenshots ./e2e/screenshots"
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.1.18",
@@ -24,7 +26,8 @@
     "eslint-plugin-astro": "^1.6.0",
     "eslint-plugin-react": "^7.37.5",
     "eslint-plugin-react-hooks": "^7.0.1",
-    "tailwindcss": "^4.1.18"
+    "tailwindcss": "^4.1.18",
+    "testcafe": "^3.7.4"
   },
   "devDependencies": {
     "jest": "^30.3.0"

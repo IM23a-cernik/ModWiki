@@ -87,7 +87,12 @@ const sections = [
                     <strong>{items.length + blocks.length + miscEntries.length + achievements.length}</strong>
                 </div>
                 {modEntry.data.modrinth && (
-                        <a class="entry-link entry-link--compact entry-link--brand brand-modrinth" href={modEntry.data.modrinth} target="_blank" rel="noreferrer">
+                        <a class="entry-link entry-link--compact entry-link--brand brand-modrinth"
+                            href={modEntry.data.modrinth}
+                            target="_blank"
+                            rel="noreferrer"
+                            data-testid="modrinth-link"
+                        >
                         <span class="entry-link__brand">
                             <img
                                     src="https://cdn.simpleicons.org/modrinth/1bd96a"

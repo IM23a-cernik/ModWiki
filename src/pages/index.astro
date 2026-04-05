@@ -35,7 +35,11 @@ const mods = await getCollection("mods");
                             {mod.data.summary && <p>{mod.data.summary}</p>}
                         </div>
 
-                        <a class="entry-link tone-mod" href={`/${modSlug}/`}>
+                        <a
+                            class="entry-link tone-mod"
+                            href={`/${modSlug}/`}
+                            data-testid={`mod-link-${modSlug}`}
+                        >
                             <span class="stat-card__with-icon">
                                 {mod.data.icon && <img class="wiki-icon" src={mod.data.icon} alt="" loading="lazy" />}
                                 <span>{mod.data.name} Wiki</span>
