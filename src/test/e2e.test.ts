@@ -1,7 +1,7 @@
 import { ClientFunction, Selector } from "testcafe";
 
 fixture`Stalinium download`
-    .page`http://127.0.0.1:4321/`
+    .page`http://127.0.0.1:4321/ModWiki`
     .skipJsErrors()
     .beforeEach(async (t) => {
         await t.setNativeDialogHandler(() => true);
