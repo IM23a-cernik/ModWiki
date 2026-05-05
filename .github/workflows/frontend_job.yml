@@ -5,6 +5,11 @@ on:
   workflow_dispatch:
   push:
 
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
 jobs:
   job_build_frontend:
     name: Build frontend code
@@ -27,3 +32,21 @@ jobs:
         run: npm run test-coverage
       - name: Build Frontend
         run: npm run build
+      - name: Upload GitHub Pages artifact
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: ./dist
+
+  job_deploy_frontend:
+    name: Deploy frontend to GitHub Pages
+    needs: job_build_frontend
+    runs-on: ubuntu-latest
+
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
