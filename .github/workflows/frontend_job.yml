@@ -25,3 +25,5 @@ jobs:
         run: npx eslint .
       - name: Run tests
         run: npm run test-coverage
+      - name: Build Frontend
+        run: npm run build
