@@ -25,7 +25,7 @@ export async function getStaticPaths() {
 const { misc } = Astro.props;
 const { Content } = await render(misc);
 const modSlug = Astro.params.mod ?? getModSlugFromId(misc.id);
-const modEntry = await getEntry("mods", `${modSlug}/mod`);
+const modEntry = await getEntry("mods", `${import.meta.env.BASE_URL}/${modSlug}/mod`);
 const { icon: modIcon, themeStyle } = getModPresentation(modEntry);
 ---
 
