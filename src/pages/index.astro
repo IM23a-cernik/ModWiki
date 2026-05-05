@@ -27,7 +27,7 @@ const mods = await getCollection("mods");
                                 <p class="section-card__eyebrow">Mod</p>
                                 <div class="title-with-icon">
                                     {mod.data.icon && (
-                                        <img class="wiki-icon wiki-icon--lg" src={mod.data.icon} alt="" loading="lazy" />
+                                        <img class="wiki-icon wiki-icon--lg" src={`${import.meta.env.BASE_URL}${mod.data.icon}`} alt="" loading="lazy" />
                                     )}
                                     <h2>{mod.data.name}</h2>
                                 </div>
