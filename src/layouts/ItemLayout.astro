@@ -1,5 +1,6 @@
 ---
 import Layout from "./Layout.astro";
+import { withBaseUrl } from "../utils/url.js";
 
 interface Props {
     title: string;
@@ -31,7 +32,7 @@ const {
         <section class:list={["page-card", "entry-hero", tone, "tone-mod"]}>
             <div class="entry-hero__content">
                 <div class="title-with-icon">
-                    {entryIcon && <img class="wiki-icon wiki-icon--lg" src={entryIcon} alt="" loading="lazy" />}
+                    {entryIcon && <img class="wiki-icon wiki-icon--lg" src={withBaseUrl(entryIcon)} alt="" loading="lazy" />}
                     <div>
                         <p class="eyebrow">{eyebrow}</p>
                         <h1>{title}</h1>
@@ -44,7 +45,7 @@ const {
                 <div class:list={["stat-card", tone, "tone-mod"]}>
                     <span class="stat-card__label">Mod</span>
                     <strong class="stat-card__with-icon">
-                        {modIcon && <img class="wiki-icon" src={modIcon} alt="" loading="lazy" />}
+                        {modIcon && <img class="wiki-icon" src={withBaseUrl(modIcon)} alt="" loading="lazy" />}
                         <span>{mod}</span>
                     </strong>
                 </div>
@@ -52,7 +53,7 @@ const {
                     <span class="stat-card__label">Type</span>
                     <strong>{typeLabel}</strong>
                 </div>
-                <a class:list={["entry-link", "entry-link--compact", tone, "tone-mod"]} href={`/${mod}/`}>
+                <a class:list={["entry-link", "entry-link--compact", tone, "tone-mod"]} href={withBaseUrl(`/${mod}/`)}>
                     <span>Back to mod</span>
                     <span class="entry-link__hint">Open</span>
                 </a>

@@ -3,6 +3,7 @@ import { getCollection, render } from "astro:content";
 import Layout from "../../layouts/Layout.astro";
 import { getEntrySlugFromId, getModSlugFromId } from "../../utils/contentEntry.js";
 import { getModPresentation } from "../../utils/styleUtil.ts";
+import { withBaseUrl } from "../../utils/url.js";
 
 export async function getStaticPaths() {
     const mods = await getCollection("mods");
@@ -62,7 +63,7 @@ const sections = [
         <section class="hero hero--mod">
             <div class="hero__content tone-mod">
                 <div class="title-with-icon">
-                    {modIcon && <img class="wiki-icon wiki-icon--xl" src={modIcon} alt="" loading="lazy" />}
+                    {modIcon && <img class="wiki-icon wiki-icon--xl" src={withBaseUrl(modIcon)} alt="" loading="lazy" />}
                     <div>
                         <p class="eyebrow">Mod Wiki</p>
                         <h1>{modEntry.data.name}</h1>
@@ -78,7 +79,7 @@ const sections = [
                 <div class="stat-card tone-mod">
                     <span class="stat-card__label">Mod</span>
                     <strong class="stat-card__with-icon">
-                        {modIcon && <img class="wiki-icon" src={modIcon} alt="" loading="lazy" />}
+                        {modIcon && <img class="wiki-icon" src={withBaseUrl(modIcon)} alt="" loading="lazy" />}
                         <span>{`${modSlug}`}</span>
                     </strong>
                 </div>
@@ -141,10 +142,10 @@ const sections = [
                                             <li>
                                                 <a
                                                         class="entry-link tone-mod"
-                                                        href={`${import.meta.env.BASE_URL}/${modSlug}/${section.hrefPrefix}/${getEntrySlugFromId(entry.id)}/`}
+                                                        href={withBaseUrl(`/${modSlug}/${section.hrefPrefix}/${getEntrySlugFromId(entry.id)}/`)}
                                                 >
                                         <span class="stat-card__with-icon">
-                                            {entry.data.icon && <img class="wiki-icon" src={entry.data.icon} alt="" loading="lazy" />}
+                                            {entry.data.icon && <img class="wiki-icon" src={withBaseUrl(entry.data.icon)} alt="" loading="lazy" />}
                                             <span>{entry.data.name}</span>
                                         </span>
                                                     <span class="entry-link__hint">Open</span>
