@@ -37,7 +37,7 @@ const mods = await getCollection("mods");
 
                         <a
                             class="entry-link tone-mod"
-                            href={`/${modSlug}/`}
+                            href={`${import.meta.env.BASE_URL}/${modSlug}/`}
                             data-testid={`mod-link-${modSlug}`}
                         >
                             <span class="stat-card__with-icon">

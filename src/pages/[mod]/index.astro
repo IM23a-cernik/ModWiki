@@ -141,7 +141,7 @@ const sections = [
                                             <li>
                                                 <a
                                                         class="entry-link tone-mod"
-                                                        href={`/${modSlug}/${section.hrefPrefix}/${getEntrySlugFromId(entry.id)}/`}
+                                                        href={`${import.meta.env.BASE_URL}/${modSlug}/${section.hrefPrefix}/${getEntrySlugFromId(entry.id)}/`}
                                                 >
                                         <span class="stat-card__with-icon">
                                             {entry.data.icon && <img class="wiki-icon" src={entry.data.icon} alt="" loading="lazy" />}
