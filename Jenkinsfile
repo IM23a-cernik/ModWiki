@@ -37,7 +37,7 @@ pipeline {
  
         stage('SonarQube Analysis') {
             when {
-                branch 'develop'
+                branch 'dev'
             }
             steps {
                 sh """
@@ -61,8 +61,8 @@ pipeline {
         stage('Deploy Frontend') {
             when {
                 anyOf {
-                    branch 'master'
-                    branch 'develop'
+                    branch 'main'
+                    branch 'dev'
                 }
             }
             
