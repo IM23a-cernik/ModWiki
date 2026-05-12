@@ -27,7 +27,7 @@ pipeline {
                         npm install
                         GENERATE_SOURCEMAP=false \
                         NODE_OPTIONS="--max-old-space-size=1024" \
-                        ASTRO_BASE_PATH="/${PROJECT_NAME}/${BRANCH_NAME}/" \
+                        ASTRO_BASE_PATH="/projects/${PROJECT_NAME}/${BRANCH_NAME}/" \
                         REACT_APP_API_BASE=/api/${PROJECT_NAME}/${BRANCH_NAME}/api \
                         npm run build
                     '''
