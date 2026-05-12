@@ -1,19 +1,21 @@
 ---
-import { getCollection } from "astro:content";
+import { getCollection, getEntry, render } from "astro:content";
+import ItemLayout from "../../../layouts/ItemLayout.astro";
+import { getModSlugFromId, getRouteEntryParams } from "../../../utils/contentEntry.js";
+import { getModPresentation } from "../../../utils/styleUtil.ts";
 
 export async function getStaticPaths() {
     const blocks = await getCollection("blocks");
 
     return blocks
         .map((block) => {
-            const [mod, section, blockSlug] = block.id.split("/");
-
-            if (!mod || section !== "blocks" || !blockSlug) {
+            const routeParams = getRouteEntryParams(block.id, "blocks");
+            if (!routeParams) {
                 return null;
             }
 
             return {
-                params: { mod, block: blockSlug },
+                params: { mod: routeParams.mod, block: routeParams.entrySlug },
                 props: { block },
             };
         })
@@ -21,7 +23,24 @@ export async function getStaticPaths() {
 }
 
 const { block } = Astro.props;
+const { Content } = await render(block);
+const modSlug = Astro.params.mod ?? getModSlugFromId(block.id);
+const modEntry = await getEntry("mods", `${modSlug}/mod`);
+const { icon: modIcon, themeStyle } = getModPresentation(modEntry);
 ---
 
-<h1>{block.data.name}</h1>
-<p>{block.body}</p>
+<ItemLayout
+    title={block.data.name}
+    description={`Block entry for ${block.data.name}.`}
+    eyebrow="Block"
+    mod={modSlug}
+    tone="tone-mod"
+    typeLabel="Block"
+    modIcon={modIcon}
+    entryIcon={block.data.icon}
+    themeStyle={themeStyle}
+>
+    <div class="prose">
+        <Content />
+    </div>
+</ItemLayout>

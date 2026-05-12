@@ -1,19 +1,21 @@
 ---
-import { getCollection } from "astro:content";
+import { getCollection, getEntry, render } from "astro:content";
+import ItemLayout from "../../../layouts/ItemLayout.astro";
+import { getModSlugFromId, getRouteEntryParams } from "../../../utils/contentEntry.js";
+import { getModPresentation } from "../../../utils/styleUtil.ts";
 
 export async function getStaticPaths() {
     const achievements = await getCollection("achievements");
 
     return achievements
         .map((achievement) => {
-            const [mod, section, achievementSlug] = achievement.id.split("/");
-
-            if (!mod || section !== "achievements" || !achievementSlug) {
+            const routeParams = getRouteEntryParams(achievement.id, "achievements");
+            if (!routeParams) {
                 return null;
             }
 
             return {
-                params: { mod, achievement: achievementSlug },
+                params: { mod: routeParams.mod, achievement: routeParams.entrySlug },
                 props: { achievement },
             };
         })
@@ -21,7 +23,24 @@ export async function getStaticPaths() {
 }
 
 const { achievement } = Astro.props;
+const { Content } = await render(achievement);
+const modSlug = Astro.params.mod ?? getModSlugFromId(achievement.id);
+const modEntry = await getEntry("mods", `${modSlug}/mod`);
+const { icon: modIcon, themeStyle } = getModPresentation(modEntry);
 ---
 
-<h1>{achievement.data.name}</h1>
-<p>{achievement.body}</p>
+<ItemLayout
+        title={achievement.data.name}
+        description={`Achievement entry for ${achievement.data.name}.`}
+        eyebrow="Achievement"
+        mod={modSlug}
+        tone="tone-mod"
+        typeLabel="Achievement"
+        modIcon={modIcon}
+        entryIcon={achievement.data.icon}
+        themeStyle={themeStyle}
+>
+    <div class="prose">
+        <Content />
+    </div>
+</ItemLayout>

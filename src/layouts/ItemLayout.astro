@@ -1,4 +1,67 @@
 ---
+import Layout from "./Layout.astro";
+import { withBaseUrl } from "../utils/url.js";
 
+interface Props {
+    title: string;
+    description?: string;
+    eyebrow: string;
+    mod: string;
+    tone?: string;
+    typeLabel: string;
+    modIcon?: string;
+    entryIcon?: string;
+    themeStyle?: string;
+}
+
+const {
+    title,
+    description,
+    eyebrow,
+    mod,
+    tone = "tone-burgundy",
+    typeLabel,
+    modIcon,
+    entryIcon,
+    themeStyle,
+} = Astro.props;
 ---
 
+<Layout title={`${title} | ModWiki`} description={description} themeStyle={themeStyle}>
+    <main class="page-shell">
+        <section class:list={["page-card", "entry-hero", tone, "tone-mod"]}>
+            <div class="entry-hero__content">
+                <div class="title-with-icon">
+                    {entryIcon && <img class="wiki-icon wiki-icon--lg" src={withBaseUrl(entryIcon)} alt="" loading="lazy" />}
+                    <div>
+                        <p class="eyebrow">{eyebrow}</p>
+                        <h1>{title}</h1>
+                    </div>
+                </div>
+                {description && <p class="summary">{description}</p>}
+            </div>
+
+            <aside class="entry-hero__meta">
+                <div class:list={["stat-card", tone, "tone-mod"]}>
+                    <span class="stat-card__label">Mod</span>
+                    <strong class="stat-card__with-icon">
+                        {modIcon && <img class="wiki-icon" src={withBaseUrl(modIcon)} alt="" loading="lazy" />}
+                        <span>{mod}</span>
+                    </strong>
+                </div>
+                <div class:list={["stat-card", tone, "tone-mod"]}>
+                    <span class="stat-card__label">Type</span>
+                    <strong>{typeLabel}</strong>
+                </div>
+                <a class:list={["entry-link", "entry-link--compact", tone, "tone-mod"]} href={withBaseUrl(`/${mod}/`)}>
+                    <span>Back to mod</span>
+                    <span class="entry-link__hint">Open</span>
+                </a>
+            </aside>
+        </section>
+
+        <section class:list={["page-card", "content-card", tone, "tone-mod"]}>
+            <slot />
+        </section>
+    </main>
+</Layout>

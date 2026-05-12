@@ -1,19 +1,21 @@
 ---
-import { getCollection } from "astro:content";
+import { getCollection, getEntry, render } from "astro:content";
+import ItemLayout from "../../../layouts/ItemLayout.astro";
+import { getModSlugFromId, getRouteEntryParams } from "../../../utils/contentEntry.js";
+import { getModPresentation } from "../../../utils/styleUtil.ts";
 
 export async function getStaticPaths() {
     const miscEntries = await getCollection("misc");
 
     return miscEntries
         .map((misc) => {
-            const [mod, section, miscSlug] = misc.id.split("/");
-
-            if (!mod || section !== "misc" || !miscSlug) {
+            const routeParams = getRouteEntryParams(misc.id, "misc");
+            if (!routeParams) {
                 return null;
             }
 
             return {
-                params: { mod, misc: miscSlug },
+                params: { mod: routeParams.mod, misc: routeParams.entrySlug },
                 props: { misc },
             };
         })
@@ -21,7 +23,24 @@ export async function getStaticPaths() {
 }
 
 const { misc } = Astro.props;
+const { Content } = await render(misc);
+const modSlug = Astro.params.mod ?? getModSlugFromId(misc.id);
+const modEntry = await getEntry("mods", `${modSlug}/mod`);
+const { icon: modIcon, themeStyle } = getModPresentation(modEntry);
 ---
 
-<h1>{misc.data.name}</h1>
-<p>{misc.body}</p>
+<ItemLayout
+    title={misc.data.name}
+    description={`Misc entry for ${misc.data.name}.`}
+    eyebrow="Misc"
+    mod={modSlug}
+    tone="tone-mod"
+    typeLabel="Misc"
+    modIcon={modIcon}
+    entryIcon={misc.data.icon}
+    themeStyle={themeStyle}
+>
+    <div class="prose">
+        <Content />
+    </div>
+</ItemLayout>

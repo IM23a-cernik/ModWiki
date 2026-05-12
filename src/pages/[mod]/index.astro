@@ -1,12 +1,15 @@
 ---
 import { getCollection, render } from "astro:content";
 import Layout from "../../layouts/Layout.astro";
+import { getEntrySlugFromId, getModSlugFromId } from "../../utils/contentEntry.js";
+import { getModPresentation } from "../../utils/styleUtil.ts";
+import { withBaseUrl } from "../../utils/url.js";
 
 export async function getStaticPaths() {
     const mods = await getCollection("mods");
 
     return mods.map((modEntry) => {
-        const [mod] = modEntry.id.split("/");
+        const mod = getModSlugFromId(modEntry.id);
 
         return {
             params: { mod },
@@ -17,8 +20,8 @@ export async function getStaticPaths() {
 
 const { modEntry } = Astro.props;
 const { Content } = await render(modEntry);
-const modSlug = Astro.params.mod ?? modEntry.id.split("/")[0];
-const getEntrySlug = (id: string) => id.split("/").at(-1) ?? id;
+const modSlug = Astro.params.mod ?? getModSlugFromId(modEntry.id);
+const { icon: modIcon, themeStyle } = getModPresentation(modEntry);
 
 const [items, blocks, miscEntries, achievements] = await Promise.all([
     getCollection("items", ({ id }) => id.startsWith(`${modSlug}/`)),
@@ -26,50 +29,135 @@ const [items, blocks, miscEntries, achievements] = await Promise.all([
     getCollection("misc", ({ id }) => id.startsWith(`${modSlug}/`)),
     getCollection("achievements", ({ id }) => id.startsWith(`${modSlug}/`)),
 ]);
+
+const sections = [
+    {
+        title: "Items",
+        description: "Equipment, tools, and crafted materials.",
+        hrefPrefix: "items",
+        entries: items,
+    },
+    {
+        title: "Blocks",
+        description: "World blocks, resources, and machines.",
+        hrefPrefix: "blocks",
+        entries: blocks,
+    },
+    {
+        title: "Misc",
+        description: "Utility content that does not fit a primary class.",
+        hrefPrefix: "misc",
+        entries: miscEntries,
+    },
+    {
+        title: "Achievements",
+        description: "Progression milestones and unlocks.",
+        hrefPrefix: "achievements",
+        entries: achievements,
+    },
+];
 ---
 
-<Layout>
-    <main>
-        <h1>{modEntry.data.name}</h1>
-        {modEntry.data.summary && <p>{modEntry.data.summary}</p>}
-        <Content />
+<Layout title={`${modEntry.data.name} | ModWiki`} description={modEntry.data.summary} themeStyle={themeStyle}>
+    <main class="page-shell">
+        <section class="hero hero--mod">
+            <div class="hero__content tone-mod">
+                <div class="title-with-icon">
+                    {modIcon && <img class="wiki-icon wiki-icon--xl" src={withBaseUrl(modIcon)} alt="" loading="lazy" />}
+                    <div>
+                        <p class="eyebrow">Mod Wiki</p>
+                        <h1>{modEntry.data.name}</h1>
+                    </div>
+                </div>
+                {modEntry.data.summary && <p class="summary">{modEntry.data.summary}</p>}
+                <div class="prose">
+                    <Content />
+                </div>
+            </div>
 
-        <section>
-            <h2>Items</h2>
-            <ul>
-                {items.map((item) => (
-                    <li><a href={`/${modSlug}/items/${getEntrySlug(item.id)}/`}>{item.data.name}</a></li>
-                ))}
-            </ul>
+            <aside class="hero__meta tone-mod">
+                <div class="stat-card tone-mod">
+                    <span class="stat-card__label">Mod</span>
+                    <strong class="stat-card__with-icon">
+                        {modIcon && <img class="wiki-icon" src={withBaseUrl(modIcon)} alt="" loading="lazy" />}
+                        <span>{`${modSlug}`}</span>
+                    </strong>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-card__label">Entries</span>
+                    <strong>{items.length + blocks.length + miscEntries.length + achievements.length}</strong>
+                </div>
+                {modEntry.data.modrinth && (
+                        <a class="entry-link entry-link--compact entry-link--brand brand-modrinth"
+                            href={modEntry.data.modrinth}
+                            target="_blank"
+                            rel="noreferrer"
+                            data-testid="modrinth-link"
+                        >
+                        <span class="entry-link__brand">
+                            <img
+                                    src="https://cdn.simpleicons.org/modrinth/1bd96a"
+                                    alt=""
+                                    width="18"
+                                    height="18"
+                                    loading="lazy"
+                            />
+                            <span>Modrinth</span>
+                        </span>
+                            <span class="entry-link__hint">Visit</span>
+                        </a>
+                )}
+                {modEntry.data.curseforge && (
+                        <a class="entry-link entry-link--compact entry-link--brand brand-curseforge" href={modEntry.data.curseforge} target="_blank" rel="noreferrer">
+                        <span class="entry-link__brand">
+                            <img
+                                    src="https://cdn.simpleicons.org/curseforge/F16436"
+                                    alt=""
+                                    width="18"
+                                    height="18"
+                                    loading="lazy"
+                            />
+                            <span>CurseForge</span>
+                        </span>
+                            <span class="entry-link__hint">Visit</span>
+                        </a>
+                )}
+            </aside>
         </section>
 
-        <section>
-            <h2>Blocks</h2>
-            <ul>
-                {blocks.map((block) => (
-                    <li><a href={`/${modSlug}/blocks/${getEntrySlug(block.id)}/`}>{block.data.name}</a></li>
-                ))}
-            </ul>
-        </section>
+        <section class="section-grid">
+            {sections.map((section) => (
+                    <section class:list={["section-card", "tone-mod"]}>
+                        <div class="section-card__header">
+                            <div>
+                                <p class="section-card__eyebrow">{section.title}</p>
+                                <h2>{section.entries.length}</h2>
+                            </div>
+                            <p>{section.description}</p>
+                        </div>
 
-        <section>
-            <h2>Misc</h2>
-            <ul>
-                {miscEntries.map((misc) => (
-                    <li><a href={`/${modSlug}/misc/${getEntrySlug(misc.id)}/`}>{misc.data.name}</a></li>
-                ))}
-            </ul>
-        </section>
-
-        <section>
-            <h2>Achievements</h2>
-            <ul>
-                {achievements.map((achievement) => (
-                    <li>
-                        <a href={`/${modSlug}/achievements/${getEntrySlug(achievement.id)}/`}>{achievement.data.name}</a>
-                    </li>
-                ))}
-            </ul>
+                        {section.entries.length > 0 ? (
+                                <ul class="entry-list">
+                                    {section.entries.map((entry) => (
+                                            <li>
+                                                <a
+                                                        class="entry-link tone-mod"
+                                                        href={withBaseUrl(`/${modSlug}/${section.hrefPrefix}/${getEntrySlugFromId(entry.id)}/`)}
+                                                >
+                                        <span class="stat-card__with-icon">
+                                            {entry.data.icon && <img class="wiki-icon" src={withBaseUrl(entry.data.icon)} alt="" loading="lazy" />}
+                                            <span>{entry.data.name}</span>
+                                        </span>
+                                                    <span class="entry-link__hint">Open</span>
+                                                </a>
+                                            </li>
+                                    ))}
+                                </ul>
+                        ) : (
+                                <p class="empty-state">No entries yet.</p>
+                        )}
+                    </section>
+            ))}
         </section>
     </main>
 </Layout>
