@@ -73,7 +73,7 @@ pipeline {
                     mkdir -p "$TARGET_DIR"
                     rm -rf "$TARGET_DIR"/*
 
-                    cp -r frontend/build/* "$TARGET_DIR"/
+                    cp -r frontend/dist/* "$TARGET_DIR"/
                 '''
             }
         }
