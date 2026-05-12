@@ -8,7 +8,7 @@ const base = process.env.ASTRO_BASE_PATH ?? '/ModWiki/';
 export default defineConfig({
   site: "https://im23a-cernik.github.io",
   base,
-  outDir: "../dist",
+  outDir: "./dist",
   output: "static",
   vite: {
     plugins: [tailwindcss()]
