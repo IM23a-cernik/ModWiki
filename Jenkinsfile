@@ -58,25 +58,25 @@ pipeline {
             }
         }
 		
-        stage('Deploy Frontend') {
-            when {
-                anyOf {
-                    branch 'main'
-                    branch 'dev'
+            stage('Deploy Frontend') {
+                when {
+                    anyOf {
+                        branch 'main'
+                        branch 'dev'
+                    }
+                }
+            
+                steps {
+                    sh '''
+                        echo "Deploying frontend to $TARGET_DIR"
+
+                        mkdir -p "$TARGET_DIR"
+                        rm -rf "$TARGET_DIR"/*
+
+                        cp -r frontend/dist/* "$TARGET_DIR"/
+                    '''
                 }
             }
-            
-            steps {
-                sh '''
-                    echo "Deploying frontend to $TARGET_DIR"
-
-                    mkdir -p "$TARGET_DIR"
-                    rm -rf "$TARGET_DIR"/*
-
-                    cp -r dist/* "$TARGET_DIR"/
-                '''
-            }
-        }
     }
     post {
         always {
