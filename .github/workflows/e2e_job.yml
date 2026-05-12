@@ -29,7 +29,7 @@ jobs:
       - name: Wait until Ready
         run: |
           for i in {1..30}; do
-            if curl --silent --fail http://127.0.0.1:4321 > /dev/null; then
+            if curl --silent --fail http://127.0.0.1:4321/ModWiki > /dev/null; then
               exit 0
             fi
             sleep 2
