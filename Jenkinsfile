@@ -9,6 +9,8 @@ pipeline {
     environment {
         PROJECT_NAME       = "ModWiki"
         TARGET_DIR         = "/var/jenkins_home/projects/${PROJECT_NAME}/${BRANCH_NAME}"
+        BACKEND_CONTAINER  = "modwiki-${BRANCH_NAME}"
+        BACKEND_PORT       = "4321"
         SONAR_SCANNER_OPTS = "-Xmx512m"
         NODE_OPTIONS       = "--max-old-space-size=384"
     }
@@ -22,18 +24,16 @@ pipeline {
         
         stage('Build Frontend') {
             steps {
-                dir('frontend') {
-                    withCredentials([string(credentialsId: 'discord-webhook-url', variable: 'DISCORD_WEBHOOK_URL')]) {
-                        sh '''
-                            npm install
-                            GENERATE_SOURCEMAP=false \
-                            NODE_OPTIONS="--max-old-space-size=1024" \
-                            ASTRO_BASE_PATH="/projects/${PROJECT_NAME}/${BRANCH_NAME}/" \
-                            REACT_APP_API_BASE=/api/${PROJECT_NAME}/${BRANCH_NAME}/api \
-                            DISCORD_WEBHOOK_URL="$DISCORD_WEBHOOK_URL" \
-                            npm run build
-                        '''
-                    }
+                withCredentials([string(credentialsId: 'discord-webhook-url', variable: 'DISCORD_WEBHOOK_URL')]) {
+                    sh '''
+                        npm ci
+                        GENERATE_SOURCEMAP=false \
+                        NODE_OPTIONS="--max-old-space-size=1024" \
+                        ASTRO_BASE_PATH="/projects/${PROJECT_NAME}/${BRANCH_NAME}/" \
+                        REACT_APP_API_BASE=/api/${PROJECT_NAME}/${BRANCH_NAME}/api \
+                        DISCORD_WEBHOOK_URL="$DISCORD_WEBHOOK_URL" \
+                        npm run build
+                    '''
                 }
             }
         }
@@ -61,32 +61,33 @@ pipeline {
             }
         }
 		
-            stage('Deploy Frontend') {
-                when {
-                    anyOf {
-                        branch 'main'
-                        branch 'dev'
-                    }
-                }
-            
-                steps {
-                    withCredentials([string(credentialsId: 'discord-webhook-url', variable: 'DISCORD_WEBHOOK_URL')]) {
-                        sh '''
-                            echo "Deploying frontend to $TARGET_DIR"
-
-                            mkdir -p "$TARGET_DIR"
-                            rm -rf "$TARGET_DIR"/*
-
-                            cp -r dist "$TARGET_DIR"/
-                            cp package.json package-lock.json "$TARGET_DIR"/
-                            (cd "$TARGET_DIR" && npm ci --omit=dev)
-
-                            printf 'DISCORD_WEBHOOK_URL=%s\n' "$DISCORD_WEBHOOK_URL" > "$TARGET_DIR/.env"
-                            chmod 600 "$TARGET_DIR/.env"
-                        '''
-                    }
+        stage('Deploy Backend') {
+            when {
+                anyOf {
+                    branch 'main'
+                    branch 'dev'
                 }
             }
+            steps {
+                withCredentials([string(credentialsId: 'discord-webhook-url', variable: 'DISCORD_WEBHOOK_URL')]) {
+                    sh '''
+                        docker build -t "$BACKEND_CONTAINER" .
+
+                        docker stop "$BACKEND_CONTAINER" || true
+                        docker rm "$BACKEND_CONTAINER" || true
+
+                        docker run -d \
+                            --name "$BACKEND_CONTAINER" \
+                            --network infra-net \
+                            --restart unless-stopped \
+                            -e HOST="0.0.0.0" \
+                            -e PORT="$BACKEND_PORT" \
+                            -e DISCORD_WEBHOOK_URL="$DISCORD_WEBHOOK_URL" \
+                            "$BACKEND_CONTAINER"
+                    '''
+                }
+            }
+        }
     }
     post {
         always {
