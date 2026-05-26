@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "astro dev",
     "build": "astro build",
+    "start": "node ./dist/server/entry.mjs",
     "preview": "astro preview",
     "astro": "astro",
     "lint": "eslint .",
@@ -16,6 +17,7 @@
     "e2e:test": "testcafe firefox src/test/e2e.test.ts --client-logs --reporter spec --screenshots-on-fails --screenshots ./e2e/screenshots"
   },
   "dependencies": {
+    "@astrojs/node": "^9.5.5",
     "@tailwindcss/vite": "^4.1.18",
     "@typescript-eslint/eslint-plugin": "^8.56.1",
     "@typescript-eslint/parser": "^8.56.1",

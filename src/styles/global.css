@@ -303,6 +303,126 @@ h1 {
     background: rgba(20, 23, 28, 0.94);
 }
 
+.report-page {
+    display: grid;
+    gap: 1.5rem;
+}
+
+.report-hero {
+    grid-template-columns: 1fr;
+}
+
+.report-hero .hero__content {
+    padding-block: 2rem;
+}
+
+.report-hero h1 {
+    max-width: none;
+    font-size: clamp(2.2rem, 4vw, 3.6rem);
+    line-height: 1;
+}
+
+.report-hero .summary {
+    margin-bottom: 0;
+}
+
+.report-form {
+    display: grid;
+    gap: 1.25rem;
+    padding: 1.75rem;
+}
+
+.field-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 1rem;
+}
+
+.field-group {
+    display: grid;
+    gap: 0.55rem;
+}
+
+.field-group label {
+    font-size: 0.74rem;
+    text-transform: uppercase;
+    letter-spacing: 0.16em;
+    color: var(--accent-soft);
+}
+
+.field-group input,
+.field-group select,
+.field-group textarea {
+    width: 100%;
+    border-radius: 14px;
+    border: 1px solid var(--line);
+    background: rgba(27, 31, 37, 0.92);
+    color: var(--text);
+    padding: 0.8rem 0.9rem;
+    font: inherit;
+    font-size: 0.95rem;
+    transition:
+        border-color 160ms ease,
+        background-color 160ms ease,
+        box-shadow 160ms ease;
+}
+
+.field-group input:focus,
+.field-group select:focus,
+.field-group textarea:focus {
+    outline: none;
+    border-color: var(--line-strong);
+    background: rgba(36, 28, 33, 0.96);
+    box-shadow: 0 0 0 3px var(--accent-glow);
+}
+
+.field-group input::placeholder,
+.field-group textarea::placeholder {
+    color: color-mix(in srgb, var(--muted) 72%, transparent);
+}
+
+.field-group textarea {
+    resize: vertical;
+    min-height: 10rem;
+}
+
+.subtle input {
+    background: rgba(20, 23, 28, 0.94);
+}
+
+.primary {
+    justify-self: start;
+    border: 1px solid var(--line-strong);
+    cursor: pointer;
+    padding: 0.85rem 1.1rem;
+    border-radius: 14px;
+    font-weight: 600;
+    background: rgba(36, 28, 33, 0.96);
+    color: var(--text);
+    transition:
+        transform 160ms ease,
+        border-color 160ms ease,
+        background-color 160ms ease;
+}
+
+.primary:hover {
+    transform: translateY(-1px);
+    border-color: var(--accent-soft);
+    background: rgba(54, 31, 42, 0.96);
+}
+
+.fine-print {
+    margin: 0;
+    font-size: 0.85rem;
+    color: var(--muted);
+}
+
+.honeypot {
+    position: absolute;
+    left: -9999px;
+    top: -9999px;
+}
+
 .home-hero {
     padding: 2.5rem;
     background: rgba(21, 24, 29, 0.92);
@@ -412,6 +532,10 @@ h1 {
     .entry-hero__content,
     .home-hero {
         padding: 1.6rem;
+    }
+
+    .report-form {
+        padding: 1.4rem;
     }
 
     .section-card__header {

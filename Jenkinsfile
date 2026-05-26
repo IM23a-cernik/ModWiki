@@ -23,14 +23,17 @@ pipeline {
         stage('Build Frontend') {
             steps {
                 dir('frontend') {
-                    sh '''
-                        npm install
-                        GENERATE_SOURCEMAP=false \
-                        NODE_OPTIONS="--max-old-space-size=1024" \
-                        ASTRO_BASE_PATH="/projects/${PROJECT_NAME}/${BRANCH_NAME}/" \
-                        REACT_APP_API_BASE=/api/${PROJECT_NAME}/${BRANCH_NAME}/api \
-                        npm run build
-                    '''
+                    withCredentials([string(credentialsId: 'discord-webhook-url', variable: 'DISCORD_WEBHOOK_URL')]) {
+                        sh '''
+                            npm install
+                            GENERATE_SOURCEMAP=false \
+                            NODE_OPTIONS="--max-old-space-size=1024" \
+                            ASTRO_BASE_PATH="/projects/${PROJECT_NAME}/${BRANCH_NAME}/" \
+                            REACT_APP_API_BASE=/api/${PROJECT_NAME}/${BRANCH_NAME}/api \
+                            DISCORD_WEBHOOK_URL="$DISCORD_WEBHOOK_URL" \
+                            npm run build
+                        '''
+                    }
                 }
             }
         }
@@ -67,14 +70,21 @@ pipeline {
                 }
             
                 steps {
-                    sh '''
-                        echo "Deploying frontend to $TARGET_DIR"
+                    withCredentials([string(credentialsId: 'discord-webhook-url', variable: 'DISCORD_WEBHOOK_URL')]) {
+                        sh '''
+                            echo "Deploying frontend to $TARGET_DIR"
 
-                        mkdir -p "$TARGET_DIR"
-                        rm -rf "$TARGET_DIR"/*
+                            mkdir -p "$TARGET_DIR"
+                            rm -rf "$TARGET_DIR"/*
 
-                        cp -r dist/* "$TARGET_DIR"/
-                    '''
+                            cp -r dist "$TARGET_DIR"/
+                            cp package.json package-lock.json "$TARGET_DIR"/
+                            (cd "$TARGET_DIR" && npm ci --omit=dev)
+
+                            printf 'DISCORD_WEBHOOK_URL=%s\n' "$DISCORD_WEBHOOK_URL" > "$TARGET_DIR/.env"
+                            chmod 600 "$TARGET_DIR/.env"
+                        '''
+                    }
                 }
             }
     }
