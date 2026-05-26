@@ -1,0 +1,81 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { withBaseUrl } from '../utils/url.js';
+
+const modName = Astro.url.searchParams.get('mod') ?? '';
+const modVersion = Astro.url.searchParams.get('version') ?? '';
+const reportAction = withBaseUrl('/api/bug-report');
+---
+
+<Layout title="Report Issue | ModWiki">
+	<main class="page-shell report-page">
+		<section class="hero report-hero">
+			<div class="hero__content tone-burgundy">
+				<h1>Send a bug report or give suggestions.</h1>
+				<p class="summary">
+					Reports go straight to my Discord so I can fix the issue quickly.
+				</p>
+			</div>
+		</section>
+
+		<form class="section-card report-form tone-burgundy" method="POST" action={reportAction}>
+			<div class="field-group">
+				<label for="modName">Mod name</label>
+				<input id="modName" name="modName" value={modName} placeholder="Stalinium" required />
+			</div>
+
+			<div class="field-row">
+				<div class="field-group">
+					<label for="modVersion">Mod version</label>
+					<input id="modVersion" name="modVersion" value={modVersion} placeholder="1.0.0" required />
+				</div>
+				<div class="field-group">
+					<label for="modLoader">Mod loader</label>
+					<select id="modLoader" name="modLoader" required>
+						<option value="">Choose loader</option>
+						<option>Fabric</option>
+						<option>Forge</option>
+						<option>NeoForge</option>
+					</select>
+				</div>
+				<div class="field-group">
+					<label for="mcVersion">Minecraft version</label>
+					<input id="mcVersion" name="mcVersion" placeholder="1.21.1" required />
+				</div>
+			</div>
+
+			<div class="field-group">
+				<label for="message">What happened?</label>
+				<textarea
+					id="message"
+					name="message"
+					rows="6"
+					placeholder="Describe the issue, steps to reproduce, and what you expected."
+					required
+				></textarea>
+			</div>
+
+			<div class="field-group">
+				<label for="crashLog">Crash log (optional)</label>
+				<textarea
+					id="crashLog"
+					name="crashLog"
+					rows="6"
+					placeholder="Paste crash log or stack trace here."
+				></textarea>
+			</div>
+
+			<div class="field-group subtle">
+				<label for="contact">Contact (optional)</label>
+				<input id="contact" name="contact" placeholder="Discord tag or email" />
+			</div>
+
+			<input type="text" name="company" class="honeypot" tabindex="-1" autocomplete="off" />
+
+			<button type="submit" class="primary">Send report</button>
+			<p class="fine-print">
+				Reports are routed to Discord. Personal info is optional &mdash; add only what you want shared.
+			</p>
+		</form>
+	</main>
+</Layout>
