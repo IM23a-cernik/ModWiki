@@ -4,7 +4,8 @@ import { withBaseUrl } from '../utils/url.js';
 
 const modName = Astro.url.searchParams.get('mod') ?? '';
 const modVersion = Astro.url.searchParams.get('version') ?? '';
-const reportAction = withBaseUrl('/api/bug-report');
+const apiBase = import.meta.env.PUBLIC_API_BASE;
+const reportAction = apiBase ? `${apiBase.replace(/\/$/u, '')}/bug-report` : withBaseUrl('/api/bug-report');
 ---
 
 <Layout title="Report Issue | ModWiki">

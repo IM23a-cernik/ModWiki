@@ -30,6 +30,7 @@ pipeline {
                         GENERATE_SOURCEMAP=false \
                         NODE_OPTIONS="--max-old-space-size=1024" \
                         ASTRO_BASE_PATH="/projects/${PROJECT_NAME}/${BRANCH_NAME}/" \
+                        PUBLIC_API_BASE="/api/${PROJECT_NAME}/${BRANCH_NAME}/api" \
                         REACT_APP_API_BASE=/api/${PROJECT_NAME}/${BRANCH_NAME}/api \
                         DISCORD_WEBHOOK_URL="$DISCORD_WEBHOOK_URL" \
                         npm run build
