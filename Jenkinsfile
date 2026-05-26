@@ -60,6 +60,25 @@ pipeline {
                 }
             }
         }
+
+        stage('Deploy Frontend') {
+            when {
+                anyOf {
+                    branch 'main'
+                    branch 'dev'
+                }
+            }
+            steps {
+                sh '''
+                    echo "Deploying static frontend to $TARGET_DIR"
+
+                    mkdir -p "$TARGET_DIR"
+                    rm -rf "$TARGET_DIR"/*
+
+                    cp -r dist/client/* "$TARGET_DIR"/
+                '''
+            }
+        }
 		
         stage('Deploy Backend') {
             when {
