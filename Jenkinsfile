@@ -104,6 +104,13 @@ pipeline {
                             -e PORT="$BACKEND_PORT" \
                             -e DISCORD_WEBHOOK_URL="$DISCORD_WEBHOOK_URL" \
                             "$BACKEND_CONTAINER"
+
+                        sleep 5
+
+                        docker ps --filter "name=$BACKEND_CONTAINER"
+                        docker logs "$BACKEND_CONTAINER" --tail 100
+
+                        docker exec "$BACKEND_CONTAINER" wget -qO- "http://127.0.0.1:$BACKEND_PORT/projects/${PROJECT_NAME}/${BRANCH_NAME}/" > /dev/null
                     '''
                 }
             }
