@@ -460,6 +460,64 @@ h1 {
     background: rgba(54, 31, 42, 0.96);
 }
 
+.primary:disabled {
+    cursor: wait;
+    opacity: 0.65;
+    transform: none;
+}
+
+.report-popup {
+    position: fixed;
+    inset: 0;
+    z-index: 20;
+    display: grid;
+    place-items: center;
+    padding: 1rem;
+    background: rgba(5, 7, 10, 0.62);
+}
+
+.report-popup[hidden] {
+    display: none;
+}
+
+.report-popup__dialog {
+    width: min(340px, 100%);
+    padding: 1.25rem;
+    border: 1px solid var(--line-strong);
+    border-radius: 18px;
+    background: rgba(20, 23, 28, 0.98);
+    box-shadow: var(--shadow);
+    text-align: center;
+}
+
+.report-popup__title {
+    margin-bottom: 0.9rem;
+    color: var(--text);
+    font-size: 1.45rem;
+    font-weight: 700;
+}
+
+.report-popup[data-state="error"] .report-popup__title {
+    color: var(--accent-soft);
+}
+
+.report-popup__close {
+    border: 1px solid var(--line-strong);
+    cursor: pointer;
+    padding: 0.45rem 0.75rem;
+    border-radius: 10px;
+    background: rgba(36, 28, 33, 0.96);
+    color: var(--text);
+    font: inherit;
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+.report-popup__close:hover {
+    border-color: var(--accent-soft);
+    background: rgba(54, 31, 42, 0.96);
+}
+
 .fine-print {
     margin: 0;
     font-size: 0.85rem;
