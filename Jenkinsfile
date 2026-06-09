@@ -56,8 +56,7 @@ pipeline {
                     withSonarQubeEnv('SonarQube') {
                         sh """
                         ${scannerHome}/bin/sonar-scanner \
-                          -Dsonar.projectKey=${PROJECT_NAME} \
-                          -Dsonar.branch.name='dev'
+                          -Dsonar.projectKey=${PROJECT_NAME}
                         """
                     }
                 }
