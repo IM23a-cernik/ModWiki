@@ -7,6 +7,9 @@ const {
     description = "Mod documentation and wiki pages.",
     themeStyle,
 } = Astro.props;
+
+const currentPath = Astro.url.pathname.replace(/\/$/u, "");
+const isReportPage = currentPath.endsWith("/report");
 ---
 
 <!doctype html>
@@ -22,6 +25,12 @@ const {
 	</head>
 	<body style={themeStyle}>
 		<div class="app-shell">
+			<header class="site-header">
+				<nav class="site-nav" aria-label="Main navigation">
+					<a class="site-nav__brand" href={withBaseUrl("/")}>ModWiki</a>
+					{!isReportPage && <a class="site-nav__report" href={withBaseUrl("/report")}>Report bug</a>}
+				</nav>
+			</header>
 			<slot />
 		</div>
 	</body>
