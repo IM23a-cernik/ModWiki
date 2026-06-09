@@ -8,8 +8,7 @@ pipeline {
  
     environment {
         PROJECT_NAME       = "ModWiki"
-        TARGET_DIR         = "/var/jenkins_home/projects/${PROJECT_NAME}/${BRANCH_NAME}"
-        BACKEND_CONTAINER  = "modwiki-${BRANCH_NAME}"
+        TARGET_ROOT        = "/var/jenkins_home/projects/${PROJECT_NAME}"
         BACKEND_PORT       = "4321"
         SONAR_SCANNER_OPTS = "-Xmx512m"
         NODE_OPTIONS       = "--max-old-space-size=384"
@@ -26,12 +25,14 @@ pipeline {
             steps {
                 withCredentials([string(credentialsId: 'discord-webhook-url', variable: 'DISCORD_WEBHOOK_URL')]) {
                     sh '''
+                        DEPLOY_BRANCH="${BRANCH_NAME:-main}"
+
                         npm ci
                         GENERATE_SOURCEMAP=false \
                         NODE_OPTIONS="--max-old-space-size=1024" \
-                        ASTRO_BASE_PATH="/projects/${PROJECT_NAME}/${BRANCH_NAME}/" \
-                        PUBLIC_API_BASE="/api/${PROJECT_NAME}/${BRANCH_NAME}/api" \
-                        REACT_APP_API_BASE=/api/${PROJECT_NAME}/${BRANCH_NAME}/api \
+                        ASTRO_BASE_PATH="/projects/${PROJECT_NAME}/${DEPLOY_BRANCH}/" \
+                        PUBLIC_API_BASE="/api/${PROJECT_NAME}/${DEPLOY_BRANCH}/api" \
+                        REACT_APP_API_BASE=/api/${PROJECT_NAME}/${DEPLOY_BRANCH}/api \
                         DISCORD_WEBHOOK_URL="$DISCORD_WEBHOOK_URL" \
                         npm run build
                     '''
@@ -64,13 +65,13 @@ pipeline {
 
         stage('Deploy Frontend') {
             when {
-                anyOf {
-                    branch 'main'
-                    branch 'dev'
-                }
+                expression { !env.BRANCH_NAME || env.BRANCH_NAME == 'main' || env.BRANCH_NAME == 'dev' }
             }
             steps {
                 sh '''
+                    DEPLOY_BRANCH="${BRANCH_NAME:-main}"
+                    TARGET_DIR="${TARGET_ROOT}/${DEPLOY_BRANCH}"
+
                     echo "Deploying static frontend to $TARGET_DIR"
 
                     mkdir -p "$TARGET_DIR"
@@ -83,14 +84,14 @@ pipeline {
 		
         stage('Deploy Backend') {
             when {
-                anyOf {
-                    branch 'main'
-                    branch 'dev'
-                }
+                expression { !env.BRANCH_NAME || env.BRANCH_NAME == 'main' || env.BRANCH_NAME == 'dev' }
             }
             steps {
                 withCredentials([string(credentialsId: 'discord-webhook-url', variable: 'DISCORD_WEBHOOK_URL')]) {
                     sh '''
+                        DEPLOY_BRANCH="${BRANCH_NAME:-main}"
+                        BACKEND_CONTAINER="modwiki-${DEPLOY_BRANCH}"
+
                         docker build -t "$BACKEND_CONTAINER" .
 
                         docker stop "$BACKEND_CONTAINER" || true
@@ -110,7 +111,7 @@ pipeline {
                         docker ps --filter "name=$BACKEND_CONTAINER"
                         docker logs "$BACKEND_CONTAINER" --tail 100
 
-                        docker exec "$BACKEND_CONTAINER" wget -qO- "http://127.0.0.1:$BACKEND_PORT/projects/${PROJECT_NAME}/${BRANCH_NAME}/" > /dev/null
+                        docker exec "$BACKEND_CONTAINER" wget -qO- "http://127.0.0.1:$BACKEND_PORT/projects/${PROJECT_NAME}/${DEPLOY_BRANCH}/" > /dev/null
                     '''
                 }
             }
