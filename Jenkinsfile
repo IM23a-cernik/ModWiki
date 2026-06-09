@@ -31,8 +31,8 @@ pipeline {
                         GENERATE_SOURCEMAP=false \
                         NODE_OPTIONS="--max-old-space-size=1024" \
                         ASTRO_BASE_PATH="/projects/${PROJECT_NAME}/${DEPLOY_BRANCH}/" \
-                        PUBLIC_API_BASE="/api/${PROJECT_NAME}/${DEPLOY_BRANCH}/api" \
-                        REACT_APP_API_BASE=/api/${PROJECT_NAME}/${DEPLOY_BRANCH}/api \
+                        PUBLIC_API_BASE="/projects/${PROJECT_NAME}/${DEPLOY_BRANCH}/api" \
+                        REACT_APP_API_BASE=/projects/${PROJECT_NAME}/${DEPLOY_BRANCH}/api \
                         DISCORD_WEBHOOK_URL="$DISCORD_WEBHOOK_URL" \
                         npm run build
                     '''
@@ -112,6 +112,9 @@ pipeline {
                         docker logs "$BACKEND_CONTAINER" --tail 100
 
                         docker exec "$BACKEND_CONTAINER" wget -qO- "http://127.0.0.1:$BACKEND_PORT/projects/${PROJECT_NAME}/${DEPLOY_BRANCH}/" > /dev/null
+                        docker exec "$BACKEND_CONTAINER" wget -qO- \
+                            --post-data="modName=Pipeline&modVersion=1.0.0&modLoader=Fabric&mcVersion=1.21.1&message=Backend+route+check&company=" \
+                            "http://127.0.0.1:$BACKEND_PORT/projects/${PROJECT_NAME}/${DEPLOY_BRANCH}/api/bug-report" > /dev/null
                     '''
                 }
             }
